@@ -1,0 +1,151 @@
+{
+  "common": {
+    "add": "Adaugă",
+    "cancel": "Anulează",
+    "confirm": "Confirmă",
+    "close": "Închide",
+    "loading": "Se încarcă...",
+    "delete": "Șterge",
+    "clear": "Golește"
+  },
+  "sidebar": {
+    "home": "Acasă",
+    "summary": "Sumar"
+  },
+  "dashboard": {
+    "greeting": "Bună dimineața, {{name}}!",
+    "profile": "Profil",
+    "settings": "Setări",
+    "home": "Pagină de pornire",
+    "PDF": "PDF",
+    "BOT": "BOT",
+    "settingsDescription": "Configurează preferințele și opțiunile spațiului de lucru.",
+    "profileDescription": "Vizualizează și actualizează detaliile contului tău.",
+    "homeDescription": "Vezi ce se întâmplă în spațiul tău de lucru.",
+    "PDFDescription": "Încarcă și conversează cu documentele tale PDF.",
+    "BOTDescription": "Începe o conversație cu asistentul AI."
+  },
+  "profileMenu": {
+    "profile": "Profil",
+    "settings": "Setări",
+    "logout": "Deconectare",
+    "ro": "Română",
+    "en": "Engleză",
+    "notLoggedIn": "neautentificat în cont",
+    "expandAria": "extinde"
+  },
+
+  "loginPage": {
+    "login": "Autentificare",
+    "account": "Cont",
+    "password": "Parolă",
+    "rememberMe": "Tine-mă minte",
+    "registerNewAccount": "Nu ai un cont? Click aici"
+  },
+  "registerPage": {
+    "register": "Înregistrare",
+    "username": "Utilizator",
+    "email": "Email",
+    "password": "Parolă",
+    "confirmPassword": "Confirmă parola",
+    "aldreadyHaveAccount": "Ai deja un cont? Click aici"
+  },
+
+  "filesPage": {
+    "downloadFile": "Descarcă fisierul",
+    "dragFile": "Trage fisierul",
+    "files": "Fisiere",
+    "noAvailableFiles": "Nu există fișiere disponibile",
+    "fileUploaded": "Fisier incarcat",
+    "recentFiles": "Fișiere recente",
+    "clearFiles": "Șterge fișierele",
+    "clearAllTitle": "Ștergi toate fișierele?",
+    "clearAllConfirm": "Aceasta va șterge definitiv toate fișierele încărcate. Această acțiune nu poate fi anulată.",
+    "pdfPreview": "Previzualizare PDF"
+  },
+
+  "aiChat": {
+    "thinking": "Gândește...",
+    "thinkingTime": "AI-ul a gândit pentru {{value}} secunde",
+    "chatHistory": "Istorie chat",
+    "newChat": "Chat nou",
+    "thinkingTooltip": "Gândire",
+    "thinkingNotSupported": "Acest model nu suportă gândirea",
+    "vision": "Viziune (poate procesa imagini)",
+    "attachImage": "Atașează imagine",
+    "visionNotSupported": "Acest model nu poate procesa imagini",
+    "selectModel": "Selectează modelul",
+    "deleteSession": "Șterge",
+    "addSkill": "Adaugă abilitate",
+    "skillName": "Numele abilității",
+    "skillNameRequired": "Numele abilității este obligatoriu",
+    "slug": "Identificator",
+    "slugRequired": "Identificatorul este obligatoriu",
+    "slugHelper": "Completat automat din nume; editează pentru a suprascrie.",
+    "noItemsFound": "Niciun element găsit",
+    "statusActive": "Activ",
+    "statusInactive": "Inactiv",
+    "urlUnsafe": "URL nesigur sau invalid",
+    "urlReachable": "URL accesibil",
+    "urlUnreachable": "URL inaccesibil",
+    "imageAttachment": "atașament"
+  },
+
+  "lookupPage": {
+    "title": "Căutare alimente",
+    "placeholder": "ex. piept de pui",
+    "submit": "Caută",
+    "loading": "Se caută…",
+    "error": "Ceva nu a mers bine. Te rugăm să încerci din nou."
+  },
+
+  "dailyPage": {
+    "title": "Sumar zilnic",
+    "subtitle": "Vezi cum se adună nutriția ta.",
+    "showing": "Se afișează {{date}}",
+    "selectDay": "Apasă pe o coloană pentru detaliile zilei.",
+    "dailyGoal": "Obiectiv zilnic",
+    "from": "De la",
+    "to": "Până la",
+    "dateRange": "Interval de date",
+    "selectRange": "Selectează un interval",
+    "apply": "Aplică",
+    "dailyTotals": "Totaluri zilnice",
+    "caloriesConsumed": "Calorii consumate",
+    "caloriesBurned": "Calorii arse",
+    "caloriesTarget": "Obiectiv",
+    "protein": "Proteine",
+    "carbs": "Carbohidrați",
+    "fat": "Grăsimi",
+    "foodEntries": "Intrări alimentare",
+    "exercises": "Exerciții",
+    "noExercises": "Niciun exercițiu înregistrat.",
+    "loading": "Se încarcă…",
+    "error": "Ceva nu a mers bine. Te rugăm să încerci din nou."
+  },
+
+  "homePage": {
+    "title": "Acasă"
+  },
+
+  "videoPage": {
+    "title": "Video"
+  },
+
+  "errors": {
+    "isRequired": "{{field}} este obligatoriu",
+    "invalidEmail": "Email invalid",
+    "passwordsDoNotMatch": "Parolele nu se potrivesc",
+    "user_not_found": "Utilizatorul nu a fost găsit",
+    "unknownError": "Ceva nu a mers bine",
+    "logoutFailed": "Deconectarea a eșuat",
+    "skillAddFailed": "Nu s-a putut adăuga abilitatea",
+    "registrationFailed": "Înregistrarea a eșuat"
+  },
+
+  "success": {
+    "accountCreated": "Utilizator creat cu succes",
+    "skillAdded": "Abilitate adăugată",
+    "loggedOut": "Deconectat cu succes"
+  }
+}

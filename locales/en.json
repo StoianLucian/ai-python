@@ -1,0 +1,151 @@
+{
+  "common": {
+    "add": "Add",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "close": "Close",
+    "loading": "Loading...",
+    "delete": "Delete",
+    "clear": "Clear"
+  },
+  "sidebar": {
+    "home": "Home",
+    "summary": "Summary"
+  },
+  "dashboard": {
+    "greeting": "Good morning, {{name}}!",
+    "profile": "Profile",
+    "settings": "Settings",
+    "home": "Home",
+    "PDF": "PDF",
+    "BOT": "BOT",
+    "settingsDescription": "Configure your workspace preferences and options.",
+    "profileDescription": "View and update your personal account details.",
+    "homeDescription": "See what's happening across your workspace.",
+    "PDFDescription": "Upload and chat with your PDF documents.",
+    "BOTDescription": "Start a conversation with the AI assistant."
+  },
+  "profileMenu": {
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "ro": "Romanian",
+    "en": "English",
+    "notLoggedIn": "not logged into account",
+    "expandAria": "expand"
+  },
+  "loginPage": {
+    "login": "Login",
+    "account": "Account",
+    "password": "Password",
+    "rememberMe": "Remember me",
+    "registerNewAccount": "Don't have an account? Click here"
+  },
+
+  "registerPage": {
+    "register": "Register",
+    "username": "Username",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "aldreadyHaveAccount": "Already have an account? Click here"
+  },
+
+  "filesPage": {
+    "downloadFile": "Download file",
+    "dragFile": "Drag file",
+    "files": "Files",
+    "noAvailableFiles": "No files available",
+    "fileUploaded": "File uploaded",
+    "recentFiles": "Recent files",
+    "clearFiles": "Clear files",
+    "clearAllTitle": "Clear all files?",
+    "clearAllConfirm": "This will permanently delete all uploaded files. This action cannot be undone.",
+    "pdfPreview": "PDF Preview"
+  },
+
+  "aiChat": {
+    "thinking": "Thinking...",
+    "thinkingTime": "The AI thought for {{value}} seconds",
+    "chatHistory": "Chat history",
+    "newChat": "New chat",
+    "thinkingTooltip": "Thinking",
+    "thinkingNotSupported": "This model doesn't support thinking",
+    "vision": "Vision (can process images)",
+    "attachImage": "Attach image",
+    "visionNotSupported": "This model can't process images",
+    "selectModel": "Select model",
+    "deleteSession": "Delete",
+    "addSkill": "Add skill",
+    "skillName": "Skill name",
+    "skillNameRequired": "Skill name is required",
+    "slug": "Slug",
+    "slugRequired": "Slug is required",
+    "slugHelper": "Auto-filled from the name; edit to override.",
+    "noItemsFound": "No items found",
+    "statusActive": "Active",
+    "statusInactive": "Inactive",
+    "urlUnsafe": "Unsafe or invalid URL",
+    "urlReachable": "URL reachable",
+    "urlUnreachable": "URL unreachable",
+    "imageAttachment": "attachment"
+  },
+
+  "lookupPage": {
+    "title": "Food lookup",
+    "placeholder": "e.g. chicken breast",
+    "submit": "Look up",
+    "loading": "Looking up…",
+    "error": "Something went wrong. Please try again."
+  },
+
+  "dailyPage": {
+    "title": "Daily summary",
+    "subtitle": "See how your nutrition adds up.",
+    "showing": "Showing {{date}}",
+    "selectDay": "Click a bar to see that day's details.",
+    "dailyGoal": "Daily goal",
+    "from": "From",
+    "to": "To",
+    "dateRange": "Date range",
+    "selectRange": "Select a date range",
+    "apply": "Apply",
+    "dailyTotals": "Daily totals",
+    "caloriesConsumed": "Calories consumed",
+    "caloriesBurned": "Calories burned",
+    "caloriesTarget": "Target",
+    "protein": "Protein",
+    "carbs": "Carbs",
+    "fat": "Fat",
+    "foodEntries": "Food entries",
+    "exercises": "Exercises",
+    "noExercises": "No exercises logged.",
+    "loading": "Loading…",
+    "error": "Something went wrong. Please try again."
+  },
+
+  "homePage": {
+    "title": "Home"
+  },
+
+  "videoPage": {
+    "title": "Video"
+  },
+
+  "errors": {
+    "isRequired": "{{field}} is required",
+    "invalidEmail": "Invalid email",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "user_not_found": "User not found",
+    "unknownError": "Something went wrong",
+    "logoutFailed": "Logout failed",
+    "skillAddFailed": "Could not add skill",
+    "registrationFailed": "Registration failed"
+  },
+
+  "success": {
+    "accountCreated": "Account created successfully",
+    "skillAdded": "Skill added",
+    "loggedOut": "Logged out successfully"
+  }
+}
