@@ -1,15 +1,15 @@
 import React from 'react'
 import { Navigate } from 'react-router-dom';
 import { APP_PATHS } from './routes';
-import { CircularProgress } from '@mui/material';
 import { useAuthContext } from '../api/context/authContext/AuthContext';
+import LoadingPage from '../pages/loading/LoadingPage';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
 
     const { isAuthenticated, loading } = useAuthContext();
 
     if (loading) {
-        return <CircularProgress />
+        return <LoadingPage />
     }
 
     return (

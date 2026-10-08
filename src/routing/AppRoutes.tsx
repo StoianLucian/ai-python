@@ -9,6 +9,7 @@ import { useAuthContext } from '../api/context/authContext/AuthContext'
 import VideoPage from '../pages/video/VideoPage'
 import LookupPage from '../pages/lookup/LookupPage'
 import ProfilePage from '../pages/profile/ProfilePage'
+import LoadingPage from '../pages/loading/LoadingPage'
 
 const routes = [
     { path: APP_PATHS.LOGIN, element: <LoginPage />, isPrivate: false },
@@ -25,7 +26,7 @@ const useReturnRoutes = () => {
     const { isAuthenticated, loading } = useAuthContext()
 
     if (loading) {
-        return [<Route key="loading" path="*" element={<>Loading...</>} />]
+        return [<Route key="loading" path="*" element={<LoadingPage />} />]
     }
 
     return routes.map((route) => {
