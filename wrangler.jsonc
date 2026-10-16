@@ -1,14 +1,14 @@
 {
+  "vars": {
+    "VITE_BE_URL": "https://python-te51.onrender.com"
+  },
   "observability": {
     "logs": {
       "enabled": true,
-      "invocation_logs": true,
-    },
-    "vars": {
-      "BE_URL": "https://python-te51.onrender.com"
+      "invocation_logs": true
     },
     "traces": {
-      "enabled": false,
+      "enabled": false
     },
   },
 }
