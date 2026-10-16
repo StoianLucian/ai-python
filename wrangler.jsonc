@@ -1,7 +1,9 @@
 {
-  "vars": {
-    "VITE_BE_URL": "https://python-te51.onrender.com"
-  },
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "python-react-2",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-10-16",
+  "upload_source_maps": true,
   "observability": {
     "logs": {
       "enabled": true,
@@ -9,6 +11,6 @@
     },
     "traces": {
       "enabled": false
-    },
-  },
+    }
+  }
 }
