@@ -3,7 +3,7 @@ import axios from "axios"
 // const isDev = import.meta.env.VITE_IS_DEV;
 // const apiUrl = import.meta.env.VITE_API_URL;
 
-export const baseURL = "https://python-te51.onrender.com"
+export const baseURL = "http://127.0.0.1:8000"
 
 console.log(baseURL, "url");
 

@@ -16,13 +16,12 @@ export type ChatModel = {
 }
 
 export async function chat(
-    obj: { model: string, provider: LlmProvider, history: History[], thinking?: boolean, version?: string },
+    obj: { model: string, provider: LlmProvider, history: History[], thinking?: boolean },
     handleChunk: (chunk: string, isResponse: boolean, isThinking?: boolean, thinkingTime?: number) => void,
     signal: AbortSignal
 ) {
     try {
-        // Route to the selected endpoint version (defaults to v2).
-        const res = await fetch(`${baseURL}${CHAT_ROUTES_ENUM.CHAT}/${obj.version ?? "v2"}`, {
+        const res = await fetch(`${baseURL}${CHAT_ROUTES_ENUM.CHAT}`, {
             method: ApiMethod.POST,
             headers: {
                 "Content-Type": "application/json",
