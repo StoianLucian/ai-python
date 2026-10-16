@@ -5,7 +5,7 @@
       "invocation_logs": true,
     },
     "vars": {
-      "BE_URL": "https://python-te51.onrender.com",
+      "BE_URL": "https://python-te51.onrender.com"
     },
     "traces": {
       "enabled": false,
