@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom"
 import { useStoreMessage } from "./useCreateMessage"
 import { useChatContext, type ChatResponse } from "../../../context/chatContext/ChatContext"
 import type { LlmProvider } from "../../../../enums/providers"
+import { summarizeSession } from "../../../sessionApi"
 
 export const RoleEnum = {
     AGENT: "assistant",
@@ -139,17 +140,20 @@ export function useChatSession(model: string, provider: LlmProvider, thinking = 
 
         const message = await returnCreatedMessage(query)
 
-        const updatedHistory = attachHistory(message)
+        attachHistory(message)
 
+        // Only send the current turn; the server rebuilds prior context from the
+        // session's rolling summary (+ recent messages) using session_id.
         const history = {
             model,
             provider,
             thinking,
-            history: updatedHistory.map((message) => ({
+            session_id: isNewChat ? null : id,
+            history: [{
                 role: message.role,
                 content: message.content,
                 images: message.images
-            }))
+            }]
         };
 
         const aiMessage = await startChat({
@@ -162,6 +166,9 @@ export function useChatSession(model: string, provider: LlmProvider, thinking = 
 
         if (sessionId && aiMessage) {
             await storeMessage({ id: sessionId, message: { content: aiMessage, role: RoleEnum.AGENT } })
+            // Fire-and-forget: refresh the session's rolling summary now that both
+            // turns are persisted. Never block or fail the chat on it.
+            void summarizeSession(sessionId).catch(() => { })
         }
     };
 

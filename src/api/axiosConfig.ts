@@ -1,4 +1,4 @@
-import axios from "axios"
+import axios, { type AxiosProgressEvent } from "axios"
 
 // const isDev = import.meta.env.VITE_IS_DEV;
 const apiUrl = import.meta.env.VITE_BE_URL;
@@ -27,12 +27,13 @@ interface RequestType {
   url: string
   data?: any
   responseType?: "arraybuffer" | "blob" | "document" | "json" | "text" | "stream"
+  onUploadProgress?: (event: AxiosProgressEvent) => void
 }
 
-export const request = async ({ method, url, data, responseType = "json" }: RequestType) => {
+export const request = async ({ method, url, data, responseType = "json", onUploadProgress }: RequestType) => {
 
   try {
-    const response = await api.request({ method, url, data, responseType, withCredentials: true })
+    const response = await api.request({ method, url, data, responseType, withCredentials: true, onUploadProgress })
 
     return response.data
   } catch (error) {

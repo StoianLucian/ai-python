@@ -10,7 +10,8 @@
   },
   "sidebar": {
     "home": "Acasă",
-    "summary": "Sumar"
+    "summary": "Sumar",
+    "files": "Fișiere"
   },
   "dashboard": {
     "greeting": "Bună dimineața, {{name}}!",
@@ -61,7 +62,17 @@
     "clearFiles": "Șterge fișierele",
     "clearAllTitle": "Ștergi toate fișierele?",
     "clearAllConfirm": "Aceasta va șterge definitiv toate fișierele încărcate. Această acțiune nu poate fi anulată.",
-    "pdfPreview": "Previzualizare PDF"
+    "pdfPreview": "Previzualizare PDF",
+    "title": "Fișiere",
+    "backToChat": "Înapoi la conversație",
+    "chunksTitle": "Fragmente de document",
+    "noChunks": "Niciun fragment disponibil",
+    "addDocuments": "Adaugă documente",
+    "statusPending": "În așteptare",
+    "statusProcessing": "Se procesează",
+    "statusFailed": "Eșuat",
+    "etaLeft": "~{{value}} rămase",
+    "uploading": "Se încarcă {{percent}}%"
   },
 
   "aiChat": {

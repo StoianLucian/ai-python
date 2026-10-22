@@ -2,6 +2,9 @@ import { Box, Button, Grid, IconButton, Switch, Tooltip, } from '@mui/material'
 import PsychologyIcon from '@mui/icons-material/Psychology'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import AttachFileIcon from '@mui/icons-material/AttachFile'
+import FolderOpenIcon from '@mui/icons-material/FolderOpen'
+import HistoryIcon from '@mui/icons-material/History'
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import { useEffect, useRef, useState } from 'react'
 import StopIcon from '@mui/icons-material/Stop'
 import SelectComponent from '../select/SelectComponent'
@@ -11,7 +14,8 @@ import Icon, { IconsEnum } from '../Icons/Icon'
 import { useModelSelection } from '../../api/hooks/tanstack/chat/useModelSelection'
 import { useChatSession } from '../../api/hooks/tanstack/chat/useChatSession'
 import { useChatContext, type ChatResponse } from '../../api/context/chatContext/ChatContext'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
+import { APP_PATHS } from '../../routing/routes'
 import ChatContainer from './ChatContainer/ChatContainer'
 import MentionContainer from '../MentionContainer/MentionContainer'
 import { useChatEditor } from '../../api/hooks/useChatEditor'
@@ -30,11 +34,17 @@ export type Role = typeof RoleEnum[keyof typeof RoleEnum];
 
 export type History = Pick<ChatResponse, "role" | "content">
 
-export default function AiChat() {
+type AiChatProps = {
+    // Opens the conversation-history drawer owned by the parent page.
+    onOpenHistory?: () => void
+}
+
+export default function AiChat({ onOpenHistory }: AiChatProps = {}) {
     const { t } = useTranslation()
     const { editor, clearText, focusInput, getJson, insertContent } = useChatEditor()
     const { items, setSearch, setMentionType, mentionType } = useMentionItems()
     const { changeSession } = useChatContext()
+    const navigate = useNavigate()
 
     const {
         provider, setProvider,
@@ -220,6 +230,22 @@ export default function AiChat() {
 
 
     console.log(chatResponse)
+    // Right-aligned header actions. `element` renders a self-contained control
+    // (e.g. the skill dialog); otherwise it's a tooltip'd icon button.
+    type HeaderAction = {
+        key: string
+        element?: React.ReactNode
+        title?: string
+        icon?: React.ReactNode
+        onClick?: () => void
+    }
+    const headerActions: HeaderAction[] = [
+        { key: 'skill', element: <AddSkillDialog /> },
+        { key: 'files', title: t(translations.filesPage.title), icon: <FolderOpenIcon fontSize="small" />, onClick: () => navigate(APP_PATHS.FILES) },
+        { key: 'profile', title: t(translations.profileMenu.profile), icon: <AccountCircleIcon fontSize="small" />, onClick: () => navigate(APP_PATHS.PROFILE) },
+        ...(onOpenHistory ? [{ key: 'session', title: t(translations.aiChat.chatHistory), icon: <HistoryIcon fontSize="small" />, onClick: onOpenHistory }] : []),
+    ]
+
     return (
         <Box className='flex-1 min-w-0 flex flex-col bg-white border-l border-[#ECEAE4] p-10 h-full'>
             <Box className="flex items-center gap-4">
@@ -233,8 +259,18 @@ export default function AiChat() {
                     model={model}
                     provider={provider}
                 />
-                <AddSkillDialog />
 
+                {headerActions.map((action, i) => (
+                    <Box key={action.key} className={i === 0 ? 'ml-auto' : undefined}>
+                        {action.element ?? (
+                            <Tooltip title={action.title}>
+                                <IconButton onClick={action.onClick} aria-label={action.title}>
+                                    {action.icon}
+                                </IconButton>
+                            </Tooltip>
+                        )}
+                    </Box>
+                ))}
             </Box>
             <Box className="relative flex-1 min-h-0 flex flex-col pb-15">
             <ChatContainer

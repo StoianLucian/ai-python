@@ -37,6 +37,7 @@ export const translations = {
     sidebar: {
         home: `${TranslationKey.SIDEBAR}.home`,
         summary: `${TranslationKey.SIDEBAR}.summary`,
+        files: `${TranslationKey.SIDEBAR}.files`,
     },
 
     dashboard: {
@@ -83,7 +84,17 @@ export const translations = {
         clearFiles: `${TranslationKey.FILES_PAGE}.clearFiles`,
         clearAllTitle: `${TranslationKey.FILES_PAGE}.clearAllTitle`,
         clearAllConfirm: `${TranslationKey.FILES_PAGE}.clearAllConfirm`,
-        pdfPreview: `${TranslationKey.FILES_PAGE}.pdfPreview`
+        pdfPreview: `${TranslationKey.FILES_PAGE}.pdfPreview`,
+        title: `${TranslationKey.FILES_PAGE}.title`,
+        backToChat: `${TranslationKey.FILES_PAGE}.backToChat`,
+        chunksTitle: `${TranslationKey.FILES_PAGE}.chunksTitle`,
+        noChunks: `${TranslationKey.FILES_PAGE}.noChunks`,
+        addDocuments: `${TranslationKey.FILES_PAGE}.addDocuments`,
+        statusPending: `${TranslationKey.FILES_PAGE}.statusPending`,
+        statusProcessing: `${TranslationKey.FILES_PAGE}.statusProcessing`,
+        statusFailed: `${TranslationKey.FILES_PAGE}.statusFailed`,
+        etaLeft: `${TranslationKey.FILES_PAGE}.etaLeft`,
+        uploading: `${TranslationKey.FILES_PAGE}.uploading`
     },
     aiChat: {
         thinking: `${TranslationKey.AI_CHAT}.thinking`,

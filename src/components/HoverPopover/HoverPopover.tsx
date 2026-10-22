@@ -1,7 +1,8 @@
-import { Button, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton } from "@mui/material";
+import { Box, Button, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
+import DownloadIcon from "@mui/icons-material/Download";
 import { useState, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import usePreviewFile from "../../api/hooks/tanstack/files/usePreviewFile";
@@ -33,6 +34,10 @@ export default function HoverPopover({ item }: { item: Entity }) {
         if (!files) return null;
         return URL.createObjectURL(files);
     }, [files]);
+
+    // The download route serves the stored content-type, so the blob tells us
+    // whether this source is an image (show/download it) or a PDF (preview it).
+    const isImage = typeof files !== "string" && files.type?.startsWith("image/");
 
     useEffect(() => {
         return () => {
@@ -74,12 +79,36 @@ export default function HoverPopover({ item }: { item: Entity }) {
                     </IconButton>
                 </DialogTitle>
                 <DialogContent dividers className="min-h-0 flex-1 p-0">
-                    <PdfPreview
-                        pdfUrl={pdfUrl}
-                        loading={isFetching}
-                        pageNumber={item.page_number}
-                        highlightText={item.content ?? item.text}
-                    />
+                    {isImage ? (
+                        <Box className="h-full flex flex-col items-center justify-center gap-3 p-4">
+                            {isFetching || !pdfUrl ? (
+                                <CircularProgress />
+                            ) : (
+                                <>
+                                    <img
+                                        src={pdfUrl}
+                                        alt={item.text}
+                                        className="max-h-[75vh] max-w-full object-contain"
+                                    />
+                                    <Button
+                                        component="a"
+                                        href={pdfUrl}
+                                        download={item.text || `image-${item.source_id}`}
+                                        startIcon={<DownloadIcon />}
+                                    >
+                                        {t(translations.filesPage.downloadFile)}
+                                    </Button>
+                                </>
+                            )}
+                        </Box>
+                    ) : (
+                        <PdfPreview
+                            pdfUrl={pdfUrl}
+                            loading={isFetching}
+                            pageNumber={item.page_number}
+                            highlightText={item.content ?? item.text}
+                        />
+                    )}
                 </DialogContent>
             </Dialog>
         </>

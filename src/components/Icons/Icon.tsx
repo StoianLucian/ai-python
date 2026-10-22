@@ -2,6 +2,7 @@
 import homeIcon from "../../assets/svgs/house_icon.svg";
 import profileIcon from "../../assets/svgs/profile_icon.png";
 import pdfIcon from "../../assets/svgs/pdf_icon.png";
+import imageIcon from "../../assets/svgs/image_icon.svg";
 import CogIcon from "../../assets/svgs/cogwheel_icon.png";
 import ArrowIcon from "../../assets/svgs/arrow_icon.png";
 import ChevronIcon from "../../assets/svgs/chevron_icon.png";
@@ -14,6 +15,7 @@ export const IconsEnum = {
     HOME: "home_icon",
     PROFILE: "profile_icon",
     PDF: "pdf_icon",
+    IMAGE: "image_icon",
     COG: "cogwheel_icon",
     ARROW: "arrow_icon",
     CHEVRON: "chevron_icon",
@@ -28,6 +30,7 @@ const srcMap: Record<IconsType, string> = {
     [IconsEnum.HOME]: homeIcon,
     [IconsEnum.PROFILE]: profileIcon,
     [IconsEnum.PDF]: pdfIcon,
+    [IconsEnum.IMAGE]: imageIcon,
     [IconsEnum.COG]: CogIcon,
     [IconsEnum.ARROW]: ArrowIcon,
     [IconsEnum.CHEVRON]: ChevronIcon,

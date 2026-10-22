@@ -10,6 +10,7 @@ const SESSION_ROUTES_ENUM = {
 export const SESSION_ROUTES = {
     SESSION: SESSION_ROUTES_ENUM.SESSION,
     SESSION_ID: (id: string) => `${SESSION_ROUTES_ENUM.SESSION}/${id}`,
+    SUMMARY: (id: string) => `${SESSION_ROUTES_ENUM.SESSION}/${id}/summary`,
 }
 
 export async function createSession({ query }: CreateSessionProps) {
@@ -30,4 +31,10 @@ export async function getSession(id: string): Promise<ChatSession> {
 
 export async function changeSessionTitle({ id, title }: SetSessionTitleProps) {
     return await request({ method: ApiMethod.PUT, url: SESSION_ROUTES.SESSION_ID(id), data: { title } })
+}
+
+// Update the session's rolling summary. The backend gates the work (regenerates
+// only once enough new messages accumulate), so this is safe to call every turn.
+export async function summarizeSession(id: string) {
+    return await request({ method: ApiMethod.POST, url: SESSION_ROUTES.SUMMARY(id) })
 }

@@ -24,9 +24,6 @@ export default function ChatContainer({ chatItems, chatPending, sessionFetching 
                     const isUser = chatItem.role === RoleEnum.USER
                     const isStreaming = chatPending && !isUser && i === chatItems.length - 1
 
-                    const test = { type: "text", text: chatItem.thinking}
-
-
                     return (
                         <Stack
                             key={i}
@@ -41,7 +38,7 @@ export default function ChatContainer({ chatItems, chatPending, sessionFetching 
                                     isLoading={chatItem?.isThinking}
                                 >
                                     <ChatMessage
-                                        message={JSON.stringify(test)}
+                                        message={chatItem.thinking}
                                         alignRight={isUser}
                                     />
                                 </CollapsableContainer>

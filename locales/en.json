@@ -10,7 +10,8 @@
   },
   "sidebar": {
     "home": "Home",
-    "summary": "Summary"
+    "summary": "Summary",
+    "files": "Files"
   },
   "dashboard": {
     "greeting": "Good morning, {{name}}!",
@@ -61,7 +62,17 @@
     "clearFiles": "Clear files",
     "clearAllTitle": "Clear all files?",
     "clearAllConfirm": "This will permanently delete all uploaded files. This action cannot be undone.",
-    "pdfPreview": "PDF Preview"
+    "pdfPreview": "PDF Preview",
+    "title": "Files",
+    "backToChat": "Back to chat",
+    "chunksTitle": "Document chunks",
+    "noChunks": "No chunks available",
+    "addDocuments": "Add documents",
+    "statusPending": "Queued",
+    "statusProcessing": "Embedding",
+    "statusFailed": "Failed",
+    "etaLeft": "~{{value}} left",
+    "uploading": "Uploading {{percent}}%"
   },
 
   "aiChat": {

@@ -10,6 +10,7 @@ const useResetFiles = () => {
         mutationFn: () => resetFiles(),
         onSuccess() {
             client.invalidateQueries({ queryKey: queryKeys.files })
+            client.invalidateQueries({ queryKey: queryKeys.chunks })
         }
     });
 };

@@ -16,7 +16,7 @@ export type ChatModel = {
 }
 
 export async function chat(
-    obj: { model: string, provider: LlmProvider, history: History[], thinking?: boolean },
+    obj: { model: string, provider: LlmProvider, history: History[], thinking?: boolean, session_id?: string | null },
     handleChunk: (chunk: string, isResponse: boolean, isThinking?: boolean, thinkingTime?: number) => void,
     signal: AbortSignal
 ) {
@@ -31,7 +31,10 @@ export async function chat(
                 model: obj.model,
                 provider: obj.provider,
                 messages: obj.history,
-                thinking: obj.thinking ?? false
+                thinking: obj.thinking ?? false,
+                // Lets the server rebuild prior context from the session summary,
+                // so we don't resend the whole conversation.
+                session_id: obj.session_id ?? null
             }),
             signal: signal
         });
