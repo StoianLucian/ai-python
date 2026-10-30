@@ -6,6 +6,7 @@ import { useStoreMessage } from "./useCreateMessage"
 import { useChatContext, type ChatResponse } from "../../../context/chatContext/ChatContext"
 import type { LlmProvider } from "../../../../enums/providers"
 import { summarizeSession } from "../../../sessionApi"
+import { clearPendingChat, loadPendingChat, newTempId, savePendingChat } from "../../../pendingChat"
 
 export const RoleEnum = {
     AGENT: "assistant",
@@ -14,7 +15,7 @@ export const RoleEnum = {
 
 export type Role = typeof RoleEnum[keyof typeof RoleEnum];
 
-export function useChatSession(model: string, provider: LlmProvider, thinking = false) {
+export function useChatSession(model: string, provider: LlmProvider) {
     const { chatResponse = [], setChatResponse, isSessionFetching } = useChatContext()
     const [file, setFile] = useState<File | null>(null)
 
@@ -41,6 +42,13 @@ export function useChatSession(model: string, provider: LlmProvider, thinking = 
         if (isNewChat) {
             aiIndexRef.current = null;
             controllerRef.current?.abort();
+
+            // Restore an in-flight turn that was never persisted (reload / failed
+            // save mid-turn), so the user doesn't lose their message.
+            const pending = loadPendingChat();
+            if (pending?.messages.length) {
+                setChatResponse?.(pending.messages as ChatResponse[]);
+            }
             return;
         }
     }, [isNewChat]);
@@ -117,17 +125,6 @@ export function useChatSession(model: string, provider: LlmProvider, thinking = 
         })
     }
 
-    async function handleUserMessage(userMessage: ChatResponse) {
-        if (isNewChat) {
-            const sessionId = await createSession({ query: userMessage.content });
-            await storeMessage({ id: sessionId, message: userMessage })
-            return sessionId
-        } else {
-            await storeMessage({ id: id!, message: userMessage })
-            return id
-        }
-    }
-
     const loading = messagePending || sessionPending || chatPending;
 
     const sendMessage = async (query: string) => {
@@ -142,13 +139,37 @@ export function useChatSession(model: string, provider: LlmProvider, thinking = 
 
         attachHistory(message)
 
+        // Buffer the turn locally (localStorage) under a temp id, BEFORE any
+        // await, so it survives a reload / failed save until it's persisted.
+        const tempId = newTempId();
+        savePendingChat({
+            tempId,
+            sessionId: null,
+            messages: [{ role: message.role, content: message.content, images: message.images }],
+        });
+
+        // Create the session UP FRONT on a new chat (awaited) so this turn's
+        // messages can be persisted to a real session_id; an existing chat
+        // reuses `id`. The session is created empty — messages are stored after
+        // the stream — so the server's conversation_history is empty on this
+        // first turn and the current message isn't sent twice.
+        const sessionId = isNewChat
+            ? await createSession({ query: message.content })
+            : id;
+
+        // Record the real session id against the temp buffer now it exists.
+        savePendingChat({
+            tempId,
+            sessionId: sessionId ?? null,
+            messages: [{ role: message.role, content: message.content, images: message.images }],
+        });
+
         // Only send the current turn; the server rebuilds prior context from the
         // session's rolling summary (+ recent messages) using session_id.
         const history = {
             model,
             provider,
-            thinking,
-            session_id: isNewChat ? null : id,
+            session_id: sessionId ?? null,
             history: [{
                 role: message.role,
                 content: message.content,
@@ -162,13 +183,17 @@ export function useChatSession(model: string, provider: LlmProvider, thinking = 
             signal,
         });
 
-        const sessionId = await handleUserMessage(message)
-
-        if (sessionId && aiMessage) {
-            await storeMessage({ id: sessionId, message: { content: aiMessage, role: RoleEnum.AGENT } })
-            // Fire-and-forget: refresh the session's rolling summary now that both
-            // turns are persisted. Never block or fail the chat on it.
-            void summarizeSession(sessionId).catch(() => { })
+        if (sessionId) {
+            // Persist the user turn, then the assistant turn, in order.
+            await storeMessage({ id: sessionId, message })
+            if (aiMessage) {
+                await storeMessage({ id: sessionId, message: { content: aiMessage, role: RoleEnum.AGENT } })
+                // Fire-and-forget: refresh the session's rolling summary now that
+                // both turns are persisted. Never block or fail the chat on it.
+                void summarizeSession(sessionId).catch(() => { })
+            }
+            // Persisted server-side — the local buffer is no longer needed.
+            clearPendingChat()
         }
     };
 

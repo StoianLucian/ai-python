@@ -1,7 +1,9 @@
 
 const baseQueryKeys = {
     sessions: "sessions",
+    providers: "providers",
     models: "models",
+    hfModels: "hfModels",
     files: "files",
     chunks: "chunks",
     users: "users",
@@ -12,7 +14,9 @@ const baseQueryKeys = {
 export const queryKeys = {
     sessions: [baseQueryKeys.sessions],
     session_id: (id: string) => [baseQueryKeys.sessions, id],
+    providers: [baseQueryKeys.providers],
     models: (provider: string) => [baseQueryKeys.models, provider],
+    hfModels: (q: string) => [baseQueryKeys.hfModels, q],
     files: [baseQueryKeys.files],
     file: (id: string) => [baseQueryKeys.files, id],
     chunks: [baseQueryKeys.chunks],

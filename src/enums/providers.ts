@@ -1,10 +1,6 @@
-// LLM providers the chat can talk to. The `id` is sent to the backend and
-// resolved by `get_lmm_provider()`; `name` is the label shown in the dropdown.
-export const LLM_PROVIDERS = [
-    { id: "ollama", name: "Ollama" },
-    { id: "google", name: "Google" },
-] as const;
+// The chat providers are fetched from the backend (GET /chat/providers), which
+// owns the list and the default. These are only the type and a fallback default
+// used for initial state before that request resolves.
+export type LlmProvider = string;
 
-export type LlmProvider = typeof LLM_PROVIDERS[number]["id"];
-
-export const DEFAULT_PROVIDER: LlmProvider = "ollama";
+export const DEFAULT_PROVIDER: LlmProvider = "mlx";

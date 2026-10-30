@@ -1,40 +1,41 @@
 import { useEffect, useState } from 'react';
 import { DEFAULT_PROVIDER, type LlmProvider } from '../../../../enums/providers';
 import { useChatModels } from './useChatModels';
+import { useProviders } from './useProviders';
 
 /**
- * Owns everything about "which model are we talking to and how":
- * the selected provider/model, the thinking toggle, and the model list.
- * `supportsThinking` is derived from the selected model, and the toggle is
- * force-reset off whenever it lands on a model that can't think — so callers
- * never have to keep those pieces of state in sync by hand.
+ * Owns "which model are we talking to": the selected provider/model, the model
+ * list, and whether the current model supports image input (`supportsVision`).
+ * The provider list comes from the backend (GET /chat/providers).
  */
 export function useModelSelection() {
     const [provider, setProvider] = useState<LlmProvider>(DEFAULT_PROVIDER);
     const [model, setModel] = useState<string>('');
-    const [thinking, setThinking] = useState<boolean>(false);
+
+    const { data: providersData, isLoading: loadingProviders } = useProviders();
+    const providers = providersData?.providers ?? [];
+
+    // Once the backend list loads, snap to its default if the current pick isn't
+    // one it offers (e.g. the fallback default isn't available).
+    useEffect(() => {
+        if (providersData && !providers.some((p) => p.id === provider)) {
+            setProvider(providersData.default);
+        }
+    }, [providersData, providers, provider]);
 
     const { data: options = [], isLoading: loadingOptions } = useChatModels(setModel, provider);
 
-    const supportsThinking = !!options.find((o) => o.id === model)?.thinking;
     const supportsVision = !!options.find((o) => o.id === model)?.vision;
-
-    useEffect(() => {
-        if (!supportsThinking && thinking) {
-            setThinking(false);
-        }
-    }, [supportsThinking, thinking]);
 
     return {
         provider,
         setProvider,
+        providers,
+        loadingProviders,
         model,
         setModel,
-        thinking,
-        setThinking,
         options,
         loadingOptions,
-        supportsThinking,
         supportsVision,
     };
 }

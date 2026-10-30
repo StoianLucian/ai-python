@@ -1,5 +1,4 @@
-import { Box, Button, Grid, IconButton, Switch, Tooltip, } from '@mui/material'
-import PsychologyIcon from '@mui/icons-material/Psychology'
+import { Box, Button, Grid, IconButton, Tooltip, } from '@mui/material'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import AttachFileIcon from '@mui/icons-material/AttachFile'
 import FolderOpenIcon from '@mui/icons-material/FolderOpen'
@@ -7,8 +6,10 @@ import HistoryIcon from '@mui/icons-material/History'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import { useEffect, useRef, useState } from 'react'
 import StopIcon from '@mui/icons-material/Stop'
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload'
 import SelectComponent from '../select/SelectComponent'
 import StatusDot from '../statusDot/StatusDot'
+import ModelBrowserDialog from '../ModelBrowser/ModelBrowserDialog'
 import AddSkillDialog from '../AddSkill/AddSkillDialog'
 import Icon, { IconsEnum } from '../Icons/Icon'
 import { useModelSelection } from '../../api/hooks/tanstack/chat/useModelSelection'
@@ -21,7 +22,6 @@ import MentionContainer from '../MentionContainer/MentionContainer'
 import { useChatEditor } from '../../api/hooks/useChatEditor'
 import { EditorContent } from '@tiptap/react'
 import { MENTION_TYPES, useMentionItems } from '../../api/hooks/useMentionItems'
-import { LLM_PROVIDERS } from '../../enums/providers'
 import { useTranslation } from 'react-i18next'
 import { translations } from '../../../i18n'
 
@@ -48,14 +48,14 @@ export default function AiChat({ onOpenHistory }: AiChatProps = {}) {
 
     const {
         provider, setProvider,
+        providers, loadingProviders,
         model, setModel,
-        thinking, setThinking,
         options, loadingOptions,
-        supportsThinking,
         supportsVision,
     } = useModelSelection()
 
     const [virtualAnchor, setVirtualAnchor] = useState<any>(null)
+    const [browseOpen, setBrowseOpen] = useState(false)
     const [multiline, setMultiline] = useState(false)
     const singleLineHeightRef = useRef<number | null>(null);
     const editorRef = useRef<HTMLDivElement>(null);
@@ -73,7 +73,7 @@ export default function AiChat({ onOpenHistory }: AiChatProps = {}) {
         isSessionFetching,
         setFile,
         loading
-    } = useChatSession(model, provider, thinking)
+    } = useChatSession(model, provider)
 
     useEffect(() => {
         if (id && id !== "new") {
@@ -252,8 +252,8 @@ export default function AiChat({ onOpenHistory }: AiChatProps = {}) {
                 <SelectComponent
                     onChange={setProvider}
                     value={provider}
-                    options={LLM_PROVIDERS.map((p) => ({ id: p.id, name: p.name }))}
-                    isLoading={false}
+                    options={providers}
+                    isLoading={loadingProviders}
                 />
                 <StatusDot
                     model={model}
@@ -299,11 +299,6 @@ export default function AiChat({ onOpenHistory }: AiChatProps = {}) {
                         )}
                         label={(option) => (
                             <Box className="flex items-center gap-2 min-w-0">
-                                {option.thinking && (
-                                    <Tooltip title={t(translations.aiChat.thinkingTooltip)}>
-                                        <PsychologyIcon fontSize="small" color="primary" className="shrink-0" />
-                                    </Tooltip>
-                                )}
                                 {option.vision && (
                                     <Tooltip title={t(translations.aiChat.vision)}>
                                         <VisibilityIcon fontSize="small" color="action" className="shrink-0" />
@@ -313,15 +308,13 @@ export default function AiChat({ onOpenHistory }: AiChatProps = {}) {
                             </Box>
                         )}
                     />
-                    <Tooltip title={supportsThinking ? t(translations.aiChat.thinkingTooltip) : t(translations.aiChat.thinkingNotSupported)}>
-                        <span className="shrink-0">
-                            <Switch
-                                checked={thinking}
-                                onChange={(e) => setThinking(e.target.checked)}
-                                disabled={!supportsThinking}
-                            />
-                        </span>
-                    </Tooltip>
+                    {provider === 'mlx' && (
+                        <Tooltip title="Browse / download models">
+                            <IconButton size="small" className="shrink-0" onClick={() => setBrowseOpen(true)}>
+                                <CloudDownloadIcon fontSize="small" />
+                            </IconButton>
+                        </Tooltip>
+                    )}
                     <input
                         ref={fileInputRef}
                         type="file"
@@ -376,6 +369,12 @@ export default function AiChat({ onOpenHistory }: AiChatProps = {}) {
             </Grid>
             </Box>
             </Box>
+            <ModelBrowserDialog
+                open={browseOpen}
+                onClose={() => setBrowseOpen(false)}
+                provider={provider}
+                onInstalled={(id) => { setModel(id); setBrowseOpen(false) }}
+            />
         </Box>
     )
 }

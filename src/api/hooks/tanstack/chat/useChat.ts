@@ -8,7 +8,6 @@ type ChatProps = {
         history: History[],
         model: string,
         provider: LlmProvider,
-        thinking?: boolean,
         session_id?: string | null
     },
     handleChunk: (chunk: string, isResponse: boolean, isThinking?: boolean, thinkingTime?: number) => void,

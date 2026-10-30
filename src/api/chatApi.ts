@@ -5,7 +5,20 @@ import type { LlmProvider } from "../enums/providers";
 export const CHAT_ROUTES_ENUM = {
     CHAT: "/chat",
     CHAT_PING: "/chat/ping",
+    CHAT_PROVIDERS: "/chat/providers",
     CHAT_MODELS: "/chat/models",
+    CHAT_MODELS_SEARCH: "/chat/models/search",
+    CHAT_MODELS_PULL: "/chat/models/pull",
+}
+
+export type LlmProviderOption = {
+    id: string;
+    name: string;
+}
+
+export type ProvidersResponse = {
+    providers: LlmProviderOption[];
+    default: string;
 }
 
 export type ChatModel = {
@@ -15,8 +28,19 @@ export type ChatModel = {
     vision: boolean;
 }
 
+export type HfModel = {
+    id: string;
+    downloads: number;
+    likes: number;
+}
+
+export type PullStatus = {
+    status: "downloading" | "ready" | "error" | "unknown";
+    error: string | null;
+}
+
 export async function chat(
-    obj: { model: string, provider: LlmProvider, history: History[], thinking?: boolean, session_id?: string | null },
+    obj: { model: string, provider: LlmProvider, history: History[], session_id?: string | null },
     handleChunk: (chunk: string, isResponse: boolean, isThinking?: boolean, thinkingTime?: number) => void,
     signal: AbortSignal
 ) {
@@ -31,7 +55,6 @@ export async function chat(
                 model: obj.model,
                 provider: obj.provider,
                 messages: obj.history,
-                thinking: obj.thinking ?? false,
                 // Lets the server rebuild prior context from the session summary,
                 // so we don't resend the whole conversation.
                 session_id: obj.session_id ?? null
@@ -108,4 +131,20 @@ export async function pingModel(model: string, provider: LlmProvider) {
 
 export async function getAvailableModels(provider: LlmProvider): Promise<ChatModel[]> {
     return request({ method: ApiMethod.GET, url: `${CHAT_ROUTES_ENUM.CHAT_MODELS}?provider=${encodeURIComponent(provider)}` })
+}
+
+export async function getProviders(): Promise<ProvidersResponse> {
+    return request({ method: ApiMethod.GET, url: CHAT_ROUTES_ENUM.CHAT_PROVIDERS })
+}
+
+export async function searchHfModels(q: string, limit = 20): Promise<HfModel[]> {
+    return request({ method: ApiMethod.GET, url: `${CHAT_ROUTES_ENUM.CHAT_MODELS_SEARCH}?q=${encodeURIComponent(q)}&limit=${limit}` })
+}
+
+export async function pullModel(model: string): Promise<PullStatus> {
+    return request({ method: ApiMethod.POST, url: CHAT_ROUTES_ENUM.CHAT_MODELS_PULL, data: { model } })
+}
+
+export async function getPullStatus(model: string): Promise<PullStatus> {
+    return request({ method: ApiMethod.GET, url: `${CHAT_ROUTES_ENUM.CHAT_MODELS_PULL}?model=${encodeURIComponent(model)}` })
 }
