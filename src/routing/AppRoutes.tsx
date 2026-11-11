@@ -11,6 +11,7 @@ import LookupPage from '../pages/lookup/LookupPage'
 import ProfilePage from '../pages/profile/ProfilePage'
 import LoadingPage from '../pages/loading/LoadingPage'
 import FilesPage from '../pages/files/FilesPage'
+import UploadPage from '../pages/upload/UploadPage'
 
 const routes = [
     { path: APP_PATHS.LOGIN, element: <LoginPage />, isPrivate: false },
@@ -21,6 +22,7 @@ const routes = [
     { path: APP_PATHS.LOOKUP, element: <LookupPage />, isPrivate: true },
     { path: APP_PATHS.PROFILE, element: <ProfilePage />, isPrivate: true },
     { path: APP_PATHS.FILES, element: <FilesPage />, isPrivate: true },
+    { path: APP_PATHS.UPLOAD, element: <UploadPage />, isPrivate: true },
     { path: "*", element: <>Page not found</>, isPrivate: false },
 ];
 

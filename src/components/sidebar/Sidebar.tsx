@@ -2,6 +2,7 @@ import { Drawer, List, ListItemButton, ListItemIcon, ListItemText, Toolbar } fro
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import SummarizeRoundedIcon from "@mui/icons-material/SummarizeRounded";
 import FolderRoundedIcon from "@mui/icons-material/FolderRounded";
+import CloudUploadRoundedIcon from "@mui/icons-material/CloudUploadRounded";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuthContext } from "../../api/context/authContext/AuthContext";
@@ -20,6 +21,7 @@ const navItems: NavItem[] = [
     { labelKey: translations.sidebar.home, to: APP_PATHS.HOME, icon: HomeRoundedIcon },
     { labelKey: translations.sidebar.summary, to: APP_PATHS.PROFILE, icon: SummarizeRoundedIcon },
     { labelKey: translations.sidebar.files, to: APP_PATHS.FILES, icon: FolderRoundedIcon },
+    { labelKey: translations.sidebar.upload, to: APP_PATHS.UPLOAD, icon: CloudUploadRoundedIcon },
 ];
 
 function Sidebar() {

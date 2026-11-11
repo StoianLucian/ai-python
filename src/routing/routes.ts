@@ -10,7 +10,8 @@ export const APP_PATHS = {
   video: "/video",
   BOT: "/bot",
   LOOKUP: "/lookup",
-  FILES: "/files"
+  FILES: "/files",
+  UPLOAD: "/upload"
 }
 
 export const PATHS = {

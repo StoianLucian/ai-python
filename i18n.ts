@@ -19,6 +19,7 @@ export const TranslationKey = {
     DAILY_PAGE: "dailyPage",
     HOME_PAGE: "homePage",
     VIDEO_PAGE: "videoPage",
+    UPLOAD_PAGE: "uploadPage",
     ERRORS: "errors",
     SUCCESS: "success",
 }
@@ -38,6 +39,7 @@ export const translations = {
         home: `${TranslationKey.SIDEBAR}.home`,
         summary: `${TranslationKey.SIDEBAR}.summary`,
         files: `${TranslationKey.SIDEBAR}.files`,
+        upload: `${TranslationKey.SIDEBAR}.upload`,
     },
 
     dashboard: {
@@ -158,6 +160,17 @@ export const translations = {
     },
     videoPage: {
         title: `${TranslationKey.VIDEO_PAGE}.title`,
+    },
+    uploadPage: {
+        title: `${TranslationKey.UPLOAD_PAGE}.title`,
+        back: `${TranslationKey.UPLOAD_PAGE}.back`,
+        dragFile: `${TranslationKey.UPLOAD_PAGE}.dragFile`,
+        chooseFile: `${TranslationKey.UPLOAD_PAGE}.chooseFile`,
+        uploading: `${TranslationKey.UPLOAD_PAGE}.uploading`,
+        uploaded: `${TranslationKey.UPLOAD_PAGE}.uploaded`,
+        filename: `${TranslationKey.UPLOAD_PAGE}.filename`,
+        contentType: `${TranslationKey.UPLOAD_PAGE}.contentType`,
+        size: `${TranslationKey.UPLOAD_PAGE}.size`,
     },
     errors: {
         isRequired: `${TranslationKey.ERRORS}.isRequired`,
