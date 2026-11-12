@@ -1,4 +1,4 @@
-import { Box, Button, LinearProgress, Paper, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, LinearProgress, Paper, Typography } from '@mui/material'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import { useRef, useState } from 'react'
@@ -6,6 +6,8 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { translations } from '../../../i18n'
 import { useUpload } from '../../api/hooks/tanstack/upload/useUpload'
+import useGetEmbeddedDocuments from '../../api/hooks/tanstack/upload/useGetEmbeddedDocuments'
+import EmbeddedDocumentItem from './components/EmbeddedDocumentItem'
 import type { UploadResponse } from '../../api/uploadApi'
 
 // Formats a byte count into a human-readable string (B / KB / MB).
@@ -25,6 +27,7 @@ function UploadPage() {
     const [result, setResult] = useState<UploadResponse | null>(null)
 
     const { mutateAsync: upload, isPending, uploadProgress } = useUpload()
+    const { data: documents = [], isLoading: loadingDocuments } = useGetEmbeddedDocuments()
 
     const handleFile = async (file: File) => {
         setResult(null)
@@ -79,10 +82,16 @@ function UploadPage() {
                     {isPending ? (
                         <Box className="w-2/3 flex flex-col items-center gap-2">
                             <Typography variant="caption" color="text.secondary">
-                                {t(translations.uploadPage.uploading, { percent: uploadProgress })}
+                                {uploadProgress < 100
+                                    ? t(translations.uploadPage.uploading, { percent: uploadProgress })
+                                    : t(translations.uploadPage.embedding)}
                             </Typography>
                             <Box className="w-full">
-                                <LinearProgress variant="determinate" value={uploadProgress} />
+                                {/* Bytes sent -> determinate; then the server embeds -> indeterminate. */}
+                                <LinearProgress
+                                    variant={uploadProgress < 100 ? "determinate" : "indeterminate"}
+                                    value={uploadProgress}
+                                />
                             </Box>
                         </Box>
                     ) : (
@@ -118,8 +127,47 @@ function UploadPage() {
                         <Typography variant="body2">
                             {t(translations.uploadPage.size)}: {formatBytes(result.size_bytes)}
                         </Typography>
+                        <Typography variant="body2">
+                            {t(translations.uploadPage.documentId)}: <code>{result.document_id ?? '—'}</code>
+                        </Typography>
+                        <Typography variant="body2">
+                            {t(translations.uploadPage.textChunks)}: {result.text_chunks}
+                        </Typography>
+                        {result.text && (
+                            <Box className="mt-2 flex flex-col gap-1">
+                                <Typography variant="subtitle2">
+                                    {t(translations.uploadPage.extractedText)}
+                                </Typography>
+                                <Box
+                                    component="pre"
+                                    className="max-h-96 overflow-auto whitespace-pre-wrap rounded bg-gray-50 p-3 text-xs"
+                                >
+                                    {result.text}
+                                </Box>
+                            </Box>
+                        )}
                     </Paper>
                 )}
+
+                {/* Persisted list from the vector store — survives refresh. */}
+                <Paper variant="outlined" className="p-4 flex flex-col gap-2">
+                    <Typography variant="subtitle1">
+                        {t(translations.uploadPage.embeddedDocuments)}
+                    </Typography>
+                    {loadingDocuments ? (
+                        <CircularProgress size={24} />
+                    ) : documents.length === 0 ? (
+                        <Typography variant="body2" color="text.secondary">
+                            {t(translations.uploadPage.noEmbeddedDocuments)}
+                        </Typography>
+                    ) : (
+                        <Box className="flex flex-col items-start">
+                            {documents.map((d) => (
+                                <EmbeddedDocumentItem key={d.document_id} document={d} />
+                            ))}
+                        </Box>
+                    )}
+                </Paper>
             </Box>
         </Box>
     )

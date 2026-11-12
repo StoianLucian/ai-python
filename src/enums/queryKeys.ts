@@ -8,7 +8,8 @@ const baseQueryKeys = {
     chunks: "chunks",
     users: "users",
     skills: "skills",
-    dailySummary: "dailySummary"
+    dailySummary: "dailySummary",
+    embeddedDocuments: "embeddedDocuments"
 } as const;
 
 export const queryKeys = {
@@ -24,5 +25,7 @@ export const queryKeys = {
     users: (search: string) => [baseQueryKeys.users, search],
     skills: (search: string) => [baseQueryKeys.skills, search],
     dailySummary: (filters: Record<string, string | undefined>) => [baseQueryKeys.dailySummary, filters],
-    dailyDetail: (day: string) => [baseQueryKeys.dailySummary, "detail", day]
+    dailyDetail: (day: string) => [baseQueryKeys.dailySummary, "detail", day],
+    embeddedDocuments: [baseQueryKeys.embeddedDocuments],
+    embeddedDocumentChunks: (id: number) => [baseQueryKeys.embeddedDocuments, id, "chunks"],
 } as const;

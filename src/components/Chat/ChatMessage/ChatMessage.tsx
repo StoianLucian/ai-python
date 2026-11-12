@@ -1,8 +1,8 @@
 import { Alert, Box, Button } from '@mui/material'
-import HoverPopover from '../../HoverPopover/HoverPopover'
+import FilePreview from '../../FilePreview/FilePreview'
 import { EntityType, type Entity } from '../../../types/chat';
 import { jsonrepair } from "jsonrepair";
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, type ReactElement, type ReactNode } from 'react';
 import ReactMarkdown, { defaultUrlTransform } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { SkillMentionComponent } from '../../ChatEditor/components/SkillMention';
@@ -17,54 +17,117 @@ type ChatMessageProps = {
     isStreaming?: boolean;
 }
 
-// Citation marker the assistant emits: [[source:<file_id>:<page>|<quote>]] (the
-// quote is optional). We rewrite it to a markdown link with a `source:` scheme
-// (quote URL-encoded) so react-markdown routes it to a HoverPopover, which
-// previews/downloads the file and highlights the quote in the PDF.
+// The assistant replies in Markdown. Components are written as ordinary Markdown
+// links whose URL uses a custom scheme; the `a` renderer maps each scheme to a
+// React component:
+//
+//   [Label](popover:<file_id>:<page>[:<quote>])  -> FilePreview
+//   [Label](button:<action>)                     -> Button
+//   [@Name](user:<user_id>)                      -> UserMentionComponent
+//   [/name](skill:<skill_name>)                  -> SkillMentionComponent
+//   [Label](https://...)                         -> UrlComponent
+//   ![alt](https://...)                          -> ImageComponent
+//
+// Errors are a fenced code block with the `error` language:
+//
+//   ```error
+//   Something went wrong.
+//   ```                                          -> Alert severity="error"
+//
+// To add a component: add its scheme to COMPONENT_SCHEMES and a case in `a`.
+const COMPONENT_SCHEMES = ["popover:", "source:", "button:", "user:", "skill:"];
+
+// Legacy citation marker: [[source:<file_id>:<page>|<quote>]] (quote optional).
+// Rewritten to the link form above so it goes through the same renderer.
 const SOURCE_MARKER = /\[\[source:([^:|\]]+):([^:|\]]+)(?:\|([^\]]*))?\]\]/g;
+
+// Flatten react-markdown children to plain text.
+function childrenToText(children: ReactNode): string {
+    if (children == null || typeof children === "boolean") return "";
+    if (typeof children === "string" || typeof children === "number") return String(children);
+    if (Array.isArray(children)) return children.map(childrenToText).join("");
+    if (typeof children === "object" && "props" in children) {
+        return childrenToText((children as ReactElement<{ children?: ReactNode }>).props.children);
+    }
+    return "";
+}
+
+// Split "scheme:a:b:rest..." into [scheme, a, b, rest] — the last part keeps any
+// further ":" (quotes and actions may contain them once decoded).
+function splitScheme(href: string, parts: number): string[] {
+    const all = href.split(":");
+    return [...all.slice(0, parts - 1), all.slice(parts - 1).join(":")];
+}
+
+function renderLink(href: string | undefined, children: ReactNode) {
+    const label = childrenToText(children);
+    const scheme = href?.split(":", 1)[0];
+
+    switch (scheme) {
+        case "popover":
+        case "source": {
+            const [, id, page, quote] = splitScheme(href!, 4);
+            const item: Entity = {
+                type: EntityType.POPOVER,
+                text: label || "source",
+                source_id: id,
+                page_number: page,
+                // Verbatim quote to highlight in the PDF (optional).
+                content: quote ? decodeURIComponent(quote) : undefined,
+            };
+            return <FilePreview item={item} />;
+        }
+        case "button": {
+            const [, action] = splitScheme(href!, 2);
+            // TODO: map `action` to real behavior (keep it to a fixed allowlist).
+            return (
+                <Button size="small" variant="outlined" onClick={() => console.log("[chat button]", action)}>
+                    {label}
+                </Button>
+            );
+        }
+        case "user":
+            return <UserMentionComponent label={label.replace(/^@/, "")} />;
+        case "skill":
+            return <SkillMentionComponent label={label.replace(/^\//, "")} />;
+        default:
+            if (!href) return <>{children}</>;
+            return <UrlComponent text={label || href} url={href} />;
+    }
+}
 
 function MarkdownMessage({ text }: { text: string }) {
     const withLinks = text.replace(
         SOURCE_MARKER,
-        (_m, id, page, quote) => `[source](source:${id}:${page}:${encodeURIComponent(quote ?? "")})`
+        (_m, id, page, quote) => `[source](popover:${id}:${page}:${encodeURIComponent(quote ?? "")})`
     );
 
     return (
         <Box className="chat-markdown whitespace-normal break-words">
             <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
-                // Keep default URL sanitizing, but let our custom `source:` scheme
-                // through (react-markdown strips unknown schemes by default, which
-                // was blanking the citation links).
-                urlTransform={(url) => url.startsWith("source:") ? url : defaultUrlTransform(url)}
+                // Keep default URL sanitizing, but let our component schemes
+                // through (react-markdown strips unknown schemes by default).
+                urlTransform={(url) =>
+                    COMPONENT_SCHEMES.some((s) => url.startsWith(s)) ? url : defaultUrlTransform(url)
+                }
                 components={{
                     a({ href, children }) {
-                        if (href && href.startsWith("source:")) {
-                            const parts = href.split(":");
-                            const item: Entity = {
-                                type: EntityType.POPOVER,
-                                text: "",
-                                source_id: parts[1],
-                                page_number: parts[2],
-                                // Verbatim quote to highlight in the PDF (optional).
-                                content: parts[3] ? decodeURIComponent(parts[3]) : undefined,
-                            };
-                            return <HoverPopover item={item} />;
-                        }
-                        return (
-                            <a href={href} target="_blank" rel="noreferrer">
-                                {children}
-                            </a>
-                        );
+                        return renderLink(href, children);
                     },
                     img({ src, alt }) {
-                        return (
-                            <img
-                                src={typeof src === "string" ? src : ""}
-                                alt={alt ?? ""}
-                                className="max-w-full rounded-lg"
-                            />
-                        );
+                        return <ImageComponent src={typeof src === "string" ? src : ""} alt={alt ?? ""} />;
+                    },
+                    // Fenced ```error blocks render as an error Alert; other code
+                    // blocks render normally.
+                    pre({ children }) {
+                        const code = Array.isArray(children) ? children[0] : children;
+                        const className =
+                            (code as ReactElement<{ className?: string }> | undefined)?.props?.className ?? "";
+                        if (className.includes("language-error")) {
+                            return <Alert severity="error">{childrenToText(children).trim()}</Alert>;
+                        }
+                        return <pre>{children}</pre>;
                     },
                 }}
             >
@@ -161,7 +224,7 @@ function ChatMessage({ message, alignRight, isStreaming = false }: ChatMessagePr
                     return (<UrlComponent key={key} text={item.text} url={item.url} />)
 
                 case EntityType.POPOVER:
-                    return <HoverPopover key={key} item={item} />
+                    return <FilePreview key={key} item={item} />
 
                 case EntityType.ERROR:
                     return (

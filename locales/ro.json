@@ -73,7 +73,10 @@
     "statusProcessing": "Se procesează",
     "statusFailed": "Eșuat",
     "etaLeft": "~{{value}} rămase",
-    "uploading": "Se încarcă {{percent}}%"
+    "uploading": "Se încarcă {{percent}}%",
+    "fileChecking": "Se verifică fișierul…",
+    "fileAvailable": "Fișier disponibil",
+    "fileUnavailable": "Fișierul nu este accesibil"
   },
 
   "aiChat": {
@@ -153,7 +156,22 @@
     "uploaded": "Fișier încărcat",
     "filename": "Nume fișier",
     "contentType": "Tip conținut",
-    "size": "Dimensiune"
+    "size": "Dimensiune",
+    "embedding": "Se generează embedding-urile…",
+    "documentId": "ID document",
+    "textChunks": "Fragmente de text indexate",
+    "extractedText": "Text extras",
+    "embeddedDocuments": "Documente indexate",
+    "noEmbeddedDocuments": "Niciun document indexat încă",
+    "page": "Pagina",
+    "showAll": "Arată toate valorile",
+    "showLess": "Arată mai puțin",
+    "embeddingVector": "Embedding",
+    "metadata": "Metadate",
+    "delete": "Șterge",
+    "deleteTitle": "Ștergi acest document?",
+    "deleteConfirm": "Se vor șterge toate embedding-urile și fișierele salvate pentru „{{name}}”. Acțiunea nu poate fi anulată.",
+    "deleted": "Document șters"
   },
 
   "errors": {

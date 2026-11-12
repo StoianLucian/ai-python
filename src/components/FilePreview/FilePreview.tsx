@@ -1,5 +1,6 @@
-import { Box, Button, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton } from "@mui/material";
+import { Badge, Box, Button, CircularProgress, Dialog, DialogContent, DialogTitle, IconButton, Tooltip } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import FileIcon from "@mui/icons-material/InsertDriveFileOutlined";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import DownloadIcon from "@mui/icons-material/Download";
@@ -11,7 +12,7 @@ import type { Entity } from "../../types/chat";
 import PdfPreview from "../PdfPreview/PdfPreview";
 import { translations } from "../../../i18n";
 
-export default function HoverPopover({ item }: { item: Entity }) {
+export default function FilePreview({ item }: { item: Entity }) {
     const { t } = useTranslation();
     const [open, setOpen] = useState(false);
 
@@ -23,12 +24,31 @@ export default function HoverPopover({ item }: { item: Entity }) {
     // Red X when the probe failed (network/auth) or the file is reported missing.
     const inaccessible = isError || accessible === false;
 
-    function accessibilityIcon() {
-        if (checking) return <CircularProgress size={16} />;
-        if (inaccessible) return <CancelIcon fontSize="small" sx={{ color: "error.main" }} />;
-        if (accessible) return <CheckCircleIcon fontSize="small" sx={{ color: "success.main" }} />;
-        return null;
+    // Accessibility status shown as a small badge on the file icon and in the
+    // tooltip: spinner while probing, red X when missing/unreachable, green
+    // check when the file can be opened.
+    const status = checking ? "checking" : inaccessible ? "unavailable" : accessible ? "available" : null;
+
+    const statusLabel = {
+        checking: t(translations.filesPage.fileChecking),
+        available: t(translations.filesPage.fileAvailable),
+        unavailable: t(translations.filesPage.fileUnavailable),
+    };
+
+    function statusBadge() {
+        switch (status) {
+            case "checking":
+                return <CircularProgress size={10} thickness={6} />;
+            case "available":
+                return <CheckCircleIcon sx={{ fontSize: 12, color: "success.main" }} />;
+            case "unavailable":
+                return <CancelIcon sx={{ fontSize: 12, color: "error.main" }} />;
+            default:
+                return null;
+        }
     }
+
+    const tooltip = status ? `${item.text} · ${statusLabel[status]}` : item.text;
 
     const pdfUrl = useMemo(() => {
         if (!files) return null;
@@ -47,13 +67,30 @@ export default function HoverPopover({ item }: { item: Entity }) {
 
     return (
         <>
-            <Button
-                onClick={() => setOpen(true)}
-                disabled={inaccessible}
-                startIcon={accessibilityIcon()}
-            >
-                {item.text}
-            </Button>
+            {/* Tooltip needs a non-disabled wrapper to show on a disabled button. */}
+            <Tooltip title={tooltip}>
+                <span>
+                    <IconButton
+                        size="small"
+                        onClick={() => setOpen(true)}
+                        disabled={inaccessible}
+                        aria-label={tooltip}
+                    >
+                        <Badge
+                            overlap="circular"
+                            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                            badgeContent={statusBadge()}
+                            // White backing so the status icon stays legible over the file icon.
+                            sx={{ "& .MuiBadge-badge": { p: 0, minWidth: 0, height: "auto", bgcolor: "background.paper", borderRadius: "50%" } }}
+                        >
+                            <FileIcon
+                                fontSize="small"
+                                sx={{ color: inaccessible ? "text.disabled" : "primary.main" }}
+                            />
+                        </Badge>
+                    </IconButton>
+                </span>
+            </Tooltip>
 
             <Dialog
                 open={open}

@@ -1,12 +1,14 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { uploadFile } from '../../../uploadApi';
 import { translations } from '../../../../../i18n';
+import { queryKeys } from '../../../../enums/queryKeys';
 
 export function useUpload() {
     const { t } = useTranslation();
+    const client = useQueryClient();
     // Bytes-uploaded percentage (0–100) for the in-flight upload.
     const [uploadProgress, setUploadProgress] = useState(0);
     const mutation = useMutation({
@@ -25,6 +27,8 @@ export function useUpload() {
         },
         onSuccess() {
             toast(t(translations.uploadPage.uploaded), { type: "success" })
+            // Refresh the embedded-documents list so the new file shows up.
+            client.invalidateQueries({ queryKey: queryKeys.embeddedDocuments })
         }
     });
 

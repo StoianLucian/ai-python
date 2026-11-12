@@ -73,7 +73,10 @@
     "statusProcessing": "Embedding",
     "statusFailed": "Failed",
     "etaLeft": "~{{value}} left",
-    "uploading": "Uploading {{percent}}%"
+    "uploading": "Uploading {{percent}}%",
+    "fileChecking": "Checking file…",
+    "fileAvailable": "File available",
+    "fileUnavailable": "File not accessible"
   },
 
   "aiChat": {
@@ -153,7 +156,22 @@
     "uploaded": "File uploaded",
     "filename": "Filename",
     "contentType": "Content type",
-    "size": "Size"
+    "size": "Size",
+    "embedding": "Embedding text…",
+    "documentId": "Document ID",
+    "textChunks": "Embedded text chunks",
+    "extractedText": "Extracted text",
+    "embeddedDocuments": "Embedded documents",
+    "noEmbeddedDocuments": "No embedded documents yet",
+    "page": "Page",
+    "showAll": "Show all values",
+    "showLess": "Show less",
+    "embeddingVector": "Embedding",
+    "metadata": "Metadata",
+    "delete": "Delete",
+    "deleteTitle": "Delete this document?",
+    "deleteConfirm": "This removes all embeddings and stored files for “{{name}}”. This action cannot be undone.",
+    "deleted": "Document deleted"
   },
 
   "errors": {
